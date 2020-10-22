@@ -1,5 +1,5 @@
 # NewsPortal sample application
-The project presents itself as the main back-end news site.
+The project presents itself as the main back-end of news site.
 There is no SECRET_KEY in the project.
 ## Requirements
 - Python 3+
