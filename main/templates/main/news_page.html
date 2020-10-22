@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <style>
+        .category {
+            height: 150px;
+            vertical-align: middle;
+        }
+
+        .jumbotron {
+            padding: 0;
+        }
+
+        .news_item {
+            height: 350px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Logo</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+                <li><a href="{% url 'home-page' %}">Home</a></li>
+                <li class="active"><a href="{% url 'news-page' %}">News</a></li>
+                <li><a href="{% url 'categories-page' %}">Categories</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/admin/"><span class="glyphicon glyphicon-user"></span>Login By Admin</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+    <p>From: <input type="text" id="from"> To: <input type="text" id="to">
+        <button class="btn btn-success filter-btn"> Filter </button>
+    </p>
+    <div class="row">
+        {% for item in news %}
+            <div class="col-sm-4">
+                <a href="{% url 'content-page' pk=item.id %}" style="all:unset;cursor: pointer">
+                    <div class="panel panel-primary news_item" data-news-id="{{ item.id }}">
+                        <div class="panel-heading">{{ item.title }}</div>
+                        <div class="panel-body">
+                            <img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%"
+                                 alt="Image">
+                        </div>
+                        <div class="panel-footer">{{ item.content | safe }}</div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+    {% if is_paginated %}
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+    {% endif %}
+</div>
+<br>
+
+
+<footer class="container-fluid text-center">
+    <p>Test Task Copyright</p>
+</footer>
+
+</body>
+<script>
+
+    $(function () {
+
+        $("#from").datepicker({
+            dateFormat: 'yy-mm-dd',
+            maxDate: $("#to").val(),
+            onSelect: function () {
+                $("#to").datepicker("refresh");
+            }
+        });
+
+        $("#to").datepicker({
+            dateFormat: 'yy-mm-dd',
+            minDate: $("#from").val(),
+            onSelect: function () {
+
+                $("#from").datepicker("refresh");
+            }
+        })
+
+    });
+    $('.filter-btn').on('click', function () {
+        if (!window.location.href.includes('from') && !window.location.href.includes('to')) {
+            if (!window.location.href.includes('page')) {
+                window.location.replace(`${window.location.href}?from=${$("#from").val()}&to=${$("#to").val()}`)
+            } else {
+                window.location.replace(`${window.location.href}&from=${$("#from").val()}&to=${$("#to").val()}`)
+            }
+        } else {
+            var url = window.location.href.replace(window.location.href.substr(window.location.href.indexOf('from')), '')
+            window.location.replace(`${url}from=${$("#from").val()}&to=${$("#to").val()}`)
+        }
+
+    })
+
+
+</script>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        .category {
+            height: 150px;
+            vertical-align: middle;
+            align-content: center;
+            align-items: center;
+
+        }
+
+        .category:hover {
+            background-color: dimgrey;
+        }
+
+        .jumbotron {
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Logo</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+                <li><a href="{% url 'home-page' %}">Home</a></li>
+                <li><a href="{% url 'news-page' %}">News</a></li>
+                <li class="active"><a href="{% url 'categories-page' %}">Categories</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/admin/"><span class="glyphicon glyphicon-user"></span>Login By Admin</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+    <div class="row">
+        {% for item in categories %}
+            <a href="{% url 'view-by-category' category=item.id %}" style="all:unset;cursor: pointer">
+            <div class="col-sm-4">
+                <div class="panel panel-primary category">
+                    <h3>{{ item.category_name }}</h3>
+                </div>
+            </div>
+            </a>
+        {% endfor %}
+    </div>
+            {% if is_paginated %}
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+    {% endif %}
+</div>
+<br>
+
+
+<footer class="container-fluid text-center">
+    <p>Test Task Copyright</p>
+</footer>
+</body>
+</html>
